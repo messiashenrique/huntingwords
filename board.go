@@ -10,18 +10,18 @@ import (
 
 //Board is the struc used to build the puzzle: hunting-words
 type Board struct {
-	rows    int
-	cols    int
-	words   []string
+	Rows    int
+	Cols    int
+	Words   []string
 	Clues   []string
 	Grid    [][]cell
-	options Options
+	Options Options
 }
 
 //Options for configuration the builder of board
 type Options struct {
-	wordsInverse  bool
-	wordsDiagonal bool
+	WordsInverse  bool
+	WordsDiagonal bool
 }
 
 type cell struct {
@@ -44,7 +44,7 @@ func (board *Board) PrintRaw(color bool) {
 		for c, cell := range row {
 			word := board.Grid[r][c].word
 			if len(word) > 0 && color {
-				tempRow += colors[indexOf(word, board.words)%5] + cell.letter + "\033[0m "
+				tempRow += colors[indexOf(word, board.Words)%5] + cell.letter + "\033[0m "
 			} else {
 				tempRow += cell.letter + " "
 			}
@@ -60,12 +60,12 @@ func (board *Board) createBoard() {
 		log.Fatalln("Error:", err)
 	}
 
-	board.Grid = make([][]cell, board.rows)
-	for i, word := range board.words {
-		board.words[i] = strings.ToUpper(word)
+	board.Grid = make([][]cell, board.Rows)
+	for i, word := range board.Words {
+		board.Words[i] = strings.ToUpper(word)
 	}
 	for r := range board.Grid {
-		board.Grid[r] = make([]cell, board.cols)
+		board.Grid[r] = make([]cell, board.Cols)
 	}
 
 	board.insertRandomLetters()
@@ -81,17 +81,17 @@ func (board *Board) insertRandomLetters() {
 }
 
 func (board *Board) createPositions() {
-	for _, word := range board.words {
+	for _, word := range board.Words {
 		createPositionForWord(word, board)
 	}
 }
 
 func (board *Board) checkConditions() error {
-	rowOrCol := int(math.Min(float64(board.rows), float64(board.cols)))
-	if len(board.words) >= rowOrCol {
-		return errors.New("The number of words should be lesser than the length of columns or rows")
+	rowOrCol := int(math.Min(float64(board.Rows), float64(board.Cols)))
+	if len(board.Words) >= rowOrCol {
+		return errors.New("The number of Words should be lesser than the length of columns or rows")
 	}
-	for _, word := range board.words {
+	for _, word := range board.Words {
 		if (len(word) + 2) > rowOrCol {
 			errorSpecific := fmt.Sprintf("The word\033[1;31m %s\033[0m should be 2 characters lesser than the length of columns or rows", word)
 			return errors.New(errorSpecific)
@@ -101,11 +101,11 @@ func (board *Board) checkConditions() error {
 }
 
 func createPositionForWord(word string, board *Board) {
-	row := board.rows - 1
-	col := board.cols - 1
+	row := board.Rows - 1
+	col := board.Cols - 1
 	positions := make([]position, len(word))
 
-	direction := randomDirections(board.options)
+	direction := randomDirections(board.Options)
 	switch direction {
 	case "H":
 		positions = createHorizontalPositions(word, row, col, false)

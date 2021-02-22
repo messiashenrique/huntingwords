@@ -7,16 +7,16 @@ var colors = []string{"\033[1;36m", "\033[1;35m", "\033[1;34m", "\033[1;33m", "\
 
 func randomDirections(opt Options) (direction string) {
 	switch {
-	case opt.wordsInverse && opt.wordsDiagonal:
+	case opt.WordsInverse && opt.WordsDiagonal:
 		direction = directiontsWeights[getInt(0, 5)]
 		if direction != "D" {
 			direction += orientationsWeights[getInt(0, 2)]
 		}
 		return
-	case opt.wordsInverse && !opt.wordsDiagonal:
+	case opt.WordsInverse && !opt.WordsDiagonal:
 		direction = directiontsWeights[getInt(0, 4)] + orientationsWeights[getInt(0, 2)]
 		return
-	case !opt.wordsInverse && opt.wordsDiagonal:
+	case !opt.WordsInverse && opt.WordsDiagonal:
 		direction = directiontsWeights[getInt(0, 5)]
 		return
 	default:
